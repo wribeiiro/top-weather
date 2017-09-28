@@ -17,7 +17,6 @@ export class CityDetailsPage {
   constructor(public navCtrl: NavController, public navParams: NavParams , public storage: Storage, public alertCtrl: AlertController) {
     var city = this.navParams.get("city");
     this.items.push(city);
-    console.log(city);
   }
 
   showAlert = true;
@@ -53,7 +52,6 @@ export class CityDetailsPage {
           {
             text:'Não',
             handler: () => {
-              
             }
           }
         ]

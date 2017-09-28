@@ -1,6 +1,5 @@
 import { CityDetailsPage } from './../pages/city-details/city-details';
 import { AddCidadePage } from './../pages/add-cidade/add-cidade';
-import { SobrePage } from './../pages/sobre/sobre';
 import { NgModule, ErrorHandler } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { IonicApp, IonicModule, IonicErrorHandler } from 'ionic-angular';
@@ -13,13 +12,14 @@ import { TabsPage } from '../pages/tabs/tabs';
 
 import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
+import { CityProvider } from '../providers/city/city';
+import { CityServiceProvider } from '../providers/city-service/city-service';
 
 @NgModule({
   declarations: [
     MyApp,
     HomePage,
     TabsPage,
-    SobrePage,
     AddCidadePage,
     CityDetailsPage
   ],
@@ -34,14 +34,16 @@ import { SplashScreen } from '@ionic-native/splash-screen';
     MyApp,
     HomePage,
     TabsPage,
-    SobrePage,
     AddCidadePage,
     CityDetailsPage
   ],
   providers: [
     StatusBar,
     SplashScreen,
-    {provide: ErrorHandler, useClass: IonicErrorHandler}
+    {provide: ErrorHandler, useClass: IonicErrorHandler},
+    CityProvider,
+    CityProvider,
+    CityServiceProvider
   ]
 })
 export class AppModule {}
