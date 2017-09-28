@@ -59,7 +59,7 @@ export class CityProvider {
     var retorno: boolean;
     var cidades = [];
     return new Promise<boolean>((resolve) => {
-      this.storage.get("cities")
+        this.getCities()
         .then((cidade) => {
           //Atribui cidades  ao array
           cidades = cidade || [];
