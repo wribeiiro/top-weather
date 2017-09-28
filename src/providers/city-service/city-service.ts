@@ -12,39 +12,62 @@ import 'rxjs/add/operator/map';
 @Injectable()
 export class CityServiceProvider {
 
+  //Site da API
   apiAddr: string = "http://api.openweathermap.org/data/2.5/weather?";
+  //Chave da aplicação
   apiKey: string = "&appid=e36fb148ee55f4f8866e03a64ac06ac2";
+  //Sufixos de busca
   apiSuffix: string = "&units=metric&lang=pt";
 
   constructor(public http: Http) {
   }
 
+  //Consulta a cidade via nome e retorna uma Promise com id e nome da cidade
   public loadWeatherToSave(cityCode: string): Promise<OpenWeatherCity>{
+    //Retorna Promise
     return new Promise<OpenWeatherCity> ( (resolve) => {
       let apiURL = this.apiAddr + "q="+ cityCode + this.apiKey + this.apiSuffix;
+      //Faz requisição HTTP
       this.http.get(apiURL).map( res => res.json()).subscribe(data => {
+        //Cria instancia do objeto e atribui variáveis
         let open: OpenWeatherCity = new OpenWeatherCity();
         open.name =  data.name;
         open.id = data.id;
+
+        //Retorna Objeto
         resolve(open);
        });
     })      
   }
 
-
+  //Consulta a cidade via ID e retorna uma Promise com o objeto OpenWeatherCityCompleto
   loadWeather(cityCode: number) : Promise<OpenWeatherCity>{
     return new Promise<OpenWeatherCity> ( (resolve) => {
       let apiURL = this.apiAddr + "id="+ cityCode + this.apiKey + this.apiSuffix;
       var cityData: OpenWeatherCity = new OpenWeatherCity();
+      //Faz a requisição a API
       this.http.get(apiURL).map(res => res.json()).subscribe(data => {
+        //Atribuições de dados ao Objeto
         cityData.name = data.name;
         cityData.lat = data.coord.lat;
         cityData.log = data.coord.lon;
         cityData.weatherCondition = data.weather[0].main;
         cityData.weatherDescription = data.weather[0].description;
-        cityData.weatherIconName = data.weather[0].icon;
+        cityData.weatherIconName = data.weather[0].icon
+        cityData.id = data.id;
+        cityData.temp = data.main.temp;
+        cityData.pressure = data.main.pressure;
+        cityData.humidity = data.main.humidity;
+        cityData.visibility = data.visibility;
+        cityData.windSpd = data.wind.speed;
+        cityData.windDeg = data.wind.deg;
+        let windDirNumber = Number(cityData.windDeg);
+        cityData.clouds = data.clouds.all;
+        cityData.sunrise = data.sys.sunrise;
+        cityData.sunset = data.sys.sunset;
   
-       switch (cityData.weatherIconName) {
+       //Seleciona Icone
+        switch (cityData.weatherIconName) {
           case ("01d"):
             cityData.weatherIcon = "sunny";
             cityData.weatherDeion = "Ensolarado";
@@ -118,37 +141,36 @@ export class CityServiceProvider {
             cityData.weatherDeion = "Neblina/Nevoeiro";
             break;
         }
-  
-        cityData.temp = data.main.temp;
-        cityData.pressure = data.main.pressure;
-        cityData.humidity = data.main.humidity;
-        cityData.visibility = data.visibility;
-        cityData.windSpd = data.wind.speed;
-        cityData.windDeg = data.wind.deg;
-        let windDirNumber = Number(cityData.windDeg);
         
+        
+        //Testa direção do Vento e atribui cityData.windDir
         if (windDirNumber >= 340 || windDirNumber <= 20) {
           cityData.windDir = "N";
-        } else if (windDirNumber >= 70 && windDirNumber <= 100) {
+        }
+        else if (windDirNumber >= 70 && windDirNumber <= 100) {
           cityData.windDir = "E";
-        } else if (windDirNumber >= 160 && windDirNumber <= 200) {
+        }
+        else if (windDirNumber >= 160 && windDirNumber <= 200) {
           cityData.windDir = "S";
-        } else if (windDirNumber >= 250 || windDirNumber <= 290) {
+        }
+        else if (windDirNumber >= 250 || windDirNumber <= 290) {
           cityData.windDir = "W";
-        } else if (windDirNumber >= 21 || windDirNumber <= 69) {
+        }
+        else if (windDirNumber >= 21 || windDirNumber <= 69) {
           cityData.windDir = "NE";
-        } else if (windDirNumber >= 101 || windDirNumber <= 159) {
+        }
+        else if (windDirNumber >= 101 || windDirNumber <= 159) {
           cityData.windDir = "SE";
-        } else if (windDirNumber >= 201 || windDirNumber <= 249) {
+        }
+        else if (windDirNumber >= 201 || windDirNumber <= 249) {
           cityData.windDir = "SO";
-        } else if (windDirNumber >= 291 || windDirNumber <= 339) {
+        }
+        else if (windDirNumber >= 291 || windDirNumber <= 339) {
           cityData.windDir = "NO";
         }
   
-        cityData.clouds = data.clouds.all;
-        cityData.sunrise = data.sys.sunrise;
-        cityData.sunset = data.sys.sunset;
-
+        
+        //Retorna Objeto
         resolve(cityData);
       });      
     });

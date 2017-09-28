@@ -1,3 +1,4 @@
+import { CityProvider } from './../../providers/city/city';
 import { HomePage } from './../home/home';
 import { Storage } from '@ionic/storage';
 import { Component } from '@angular/core';
@@ -12,41 +13,50 @@ import { IonicPage, NavController, NavParams, AlertController } from 'ionic-angu
 export class CityDetailsPage {
 
   items = [];
+  city ;
 
-
-  constructor(public navCtrl: NavController, public navParams: NavParams , public storage: Storage, public alertCtrl: AlertController) {
-    var city = this.navParams.get("city");
-    this.items.push(city);
+  constructor(public navCtrl: NavController, public navParams: NavParams , 
+    public storage: Storage, public alertCtrl: AlertController, public cityDAO: CityProvider) {
+    this.city = this.navParams.get("city");
+    this.items.push(this.city);
   }
 
+  //Define que deve gerar o alerta
   showAlert = true;
   
+  //Sai da tela de detalhes da cidade
   public exitPage(){
     this.showAlert = false;
     this.navCtrl.pop();
   }
 
+  //Gera alerta informando que ocorreu um erro ao exlcuir a cidade
+  public errorAlert(){
+    let alert = this.alertCtrl.create({
+      title: `Não foi possível excluir a cidade!`,
+      subTitle: `Não possível excluir a cidade ${this.city.name}!`,
+      buttons: ['OK']
+    });
+    alert.present();
+  }
 
-  deleteCity(city){
+  //Chama o método deleteCity presente no DAO e realiza a exclusão da cidade.
+  deleteCity(){
     if (this.showAlert){
       let response = this.alertCtrl.create({
-        title: `Deseja Removar a  cidade ${city.name}`,
+        title: `Deseja Removar a  cidade ${this.city.name}`,
         message:"Você tem certeza?",
         buttons:[
           {
             text:'Sim',
             handler:() => {
-              var contador = 0;
-              this.storage.get("cidades").then( (cidades) => {
-                for (let cidadeExcluida of cidades){
-                  if (cidadeExcluida === city.name){
-                    cidades.splice(contador, 1);
-                  }
-                  contador++;
-                }
-                this.storage.set("cidades",cidades);
+              this.cityDAO.deleteCity(this.city)
+              .then( () =>{
+                this.exitPage();
+              })
+              .catch( () => {
+
               });
-              this.exitPage();
             }
           },
           {
