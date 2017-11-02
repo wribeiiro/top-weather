@@ -34,6 +34,10 @@ export class HomePage {
     }
 
   }
+  
+  ionViewWillLeave(){
+    this.items = [];
+  }
 
   ionViewCanLeave() {
     this.entrou += 1;
