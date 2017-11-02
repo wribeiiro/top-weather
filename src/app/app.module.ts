@@ -1,3 +1,5 @@
+import { LatLng } from './../model/LatLng.model';
+import { MapPage } from './../pages/map/map';
 import { CityDetailsPage } from './../pages/city-details/city-details';
 import { AddCidadePage } from './../pages/add-cidade/add-cidade';
 import { NgModule, ErrorHandler } from '@angular/core';
@@ -15,13 +17,18 @@ import { SplashScreen } from '@ionic-native/splash-screen';
 import { CityProvider } from '../providers/city/city';
 import { CityServiceProvider } from '../providers/city-service/city-service';
 
+//Native
+import { GoogleMaps } from '@ionic-native/google-maps';
+import { Geolocation } from '@ionic-native/geolocation';
+
 @NgModule({
   declarations: [
     MyApp,
     HomePage,
     TabsPage,
     AddCidadePage,
-    CityDetailsPage
+    CityDetailsPage,
+    MapPage
   ],
   imports: [
     BrowserModule,
@@ -35,7 +42,8 @@ import { CityServiceProvider } from '../providers/city-service/city-service';
     HomePage,
     TabsPage,
     AddCidadePage,
-    CityDetailsPage
+    CityDetailsPage,
+    MapPage
   ],
   providers: [
     StatusBar,
@@ -43,7 +51,10 @@ import { CityServiceProvider } from '../providers/city-service/city-service';
     {provide: ErrorHandler, useClass: IonicErrorHandler},
     CityProvider,
     CityProvider,
-    CityServiceProvider
+    CityServiceProvider,
+    Geolocation,
+    GoogleMaps,
+    LatLng
   ]
 })
 export class AppModule {}
